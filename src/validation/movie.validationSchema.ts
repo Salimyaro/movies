@@ -47,6 +47,7 @@ export const deleteMovie = {
 
 export const importMovies = {
   body: Joi.object({
-    movies: validSchema.fileValidationSchema
+    filepath: Joi.string().required(),
+    mimetype: Joi.string().valid("text/plain").required()
   })
 };

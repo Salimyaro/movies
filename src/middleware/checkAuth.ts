@@ -1,10 +1,8 @@
-import { NextFunction, Request, Response } from "express";
 import jwt from "jsonwebtoken";
 import { User } from "../db/User.js";
+import { ExpressFunction } from "../interfaces/index.js";
 
-type CheckAuth = (req: Request, res: Response, next: NextFunction) => void;
-
-export const checkAuth: CheckAuth = async (req, res, next) => {
+export const checkAuth: ExpressFunction = async (req, res, next) => {
   try {
     const auth: string = req.headers.authorization || "Bearer ";
     const token: string = auth.split(" ")[1];

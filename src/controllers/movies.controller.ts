@@ -36,71 +36,47 @@ export const createMovie: ControllerFunction = async (req, res) => {
 
 export const importMovies: ControllerFunction = async (req, res, next) => {
   try {
-    const form = formidable();
+    const { filepath } = req.body;
 
-    form.parse(req, (err, fields, files) => {
+    fs.readFile(filepath, "utf8", async (err, data) => {
       if (err) {
         next(err);
         return;
       }
+      const pending = [];
+      let imports = 0;
 
-      const filePath =
-        files.movies instanceof Array
-          ? files.movies[0]?.filepath
-          : files.movies?.filepath;
+      const filmsArray = data.split(/\n\s*\n/);
 
-      if (!filePath) {
-        return res.status(400).json({
-          status: 0,
-          error: {
-            fields: {
-              movies: "NO_FILE"
-            },
-            code: "MOVIE_EXISTS"
-          }
+      for (const film of filmsArray) {
+        const filmLines = film.split("\n");
+        if (filmLines.length !== 4) continue;
+
+        imports += 1;
+        const title = filmLines[0].split(": ")[1];
+        const movieExist = await movieService.findMovieByTitle(title);
+        if (movieExist) continue;
+
+        const year = Number(filmLines[1].split(": ")[1]);
+        const format = filmLines[2].split(": ")[1];
+        const actors = filmLines[3].split(": ")[1].split(", ");
+        const movie = await movieService.createMovie({
+          title,
+          year,
+          format,
+          actors
         });
+        pending.push(movie);
       }
 
-      fs.readFile(filePath, "utf8", async (err, data) => {
-        if (err) {
-          next(err);
-          return;
-        }
-        const pending = [];
-        let imports = 0;
-
-        const filmsArray = data.split(/\n\s*\n/);
-
-        for (const film of filmsArray) {
-          const filmLines = film.split("\n");
-          if (filmLines.length !== 4) continue;
-
-          imports += 1;
-          const title = filmLines[0].split(": ")[1];
-          const movieExist = await movieService.findMovieByTitle(title);
-          if (movieExist) continue;
-
-          const year = Number(filmLines[1].split(": ")[1]);
-          const format = filmLines[2].split(": ")[1];
-          const actors = filmLines[3].split(": ")[1].split(", ");
-          const movie = await movieService.createMovie({
-            title,
-            year,
-            format,
-            actors
-          });
-          pending.push(movie);
-        }
-
-        const result = await Promise.all(pending);
-        return res.status(200).json({
-          status: 1,
-          meta: {
-            imported: imports,
-            created: result.length
-          },
-          data: result
-        });
+      const result = await Promise.all(pending);
+      return res.status(200).json({
+        status: 1,
+        meta: {
+          imported: imports,
+          created: result.length
+        },
+        data: result
       });
     });
   } catch (error) {

@@ -6,6 +6,12 @@ export type ControllerFunction<ReqBody = any> = (
   next: NextFunction
 ) => Promise<Response | void>;
 
+export type ExpressFunction = (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => void;
+
 export type JWTData = {
   email: string;
   id: string | number;

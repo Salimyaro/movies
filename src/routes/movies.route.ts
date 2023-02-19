@@ -3,6 +3,7 @@ import { validate } from "express-validation";
 import { checkAuth } from "../middleware/checkAuth.js";
 import * as moviesController from "../controllers/movies.controller.js";
 import * as movieValidSchema from "../validation/movie.validationSchema.js";
+import { getMovieFile } from "../middleware/getFiles.js";
 
 const userRouter: Router = Router();
 
@@ -30,6 +31,7 @@ userRouter.post(
 userRouter.post(
   "/import",
   checkAuth,
+  getMovieFile,
   validate(movieValidSchema.importMovies),
   moviesController.importMovies
 );
