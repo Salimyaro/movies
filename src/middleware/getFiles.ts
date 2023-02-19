@@ -10,8 +10,6 @@ export const getMovieFile: ExpressFunction = async (req, res, next) => {
         return next(err);
       }
 
-      console.log("files", files);
-
       const filepath =
         files.movies instanceof Array
           ? files.movies[0]?.filepath
