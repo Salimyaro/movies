@@ -46,15 +46,26 @@ export const importMovies: ControllerFunction = async (req, res, next) => {
 
       const filePath =
         files.movies instanceof Array
-          ? files.movies[0].filepath
-          : files.movies.filepath;
+          ? files.movies[0]?.filepath
+          : files.movies?.filepath;
+
+      if (!filePath) {
+        return res.status(400).json({
+          status: 0,
+          error: {
+            fields: {
+              movies: "NO_FILE"
+            },
+            code: "MOVIE_EXISTS"
+          }
+        });
+      }
 
       fs.readFile(filePath, "utf8", async (err, data) => {
         if (err) {
           next(err);
           return;
         }
-
         const pending = [];
         let imports = 0;
 
@@ -94,6 +105,7 @@ export const importMovies: ControllerFunction = async (req, res, next) => {
     });
   } catch (error) {
     console.log(error);
+    console.log("!!!!!!!!!!!! exit");
     return res.status(500).json({
       status: 0,
       message: "Something wrong, please repeat request",

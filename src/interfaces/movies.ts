@@ -1,14 +1,16 @@
+type Format = "DVD" | "VHS" | "Blu-ray" | string; // string for Import Movies TXT parser
+
 export type CreateMovieReqBody = {
   title: string;
   year: number;
-  format: string;
+  format: Format;
   actors: string[];
 };
 
 export type CreateMovieBody = {
   title: string;
   year: number;
-  format: string;
+  format: Format;
   id?: number;
 };
 
@@ -17,6 +19,6 @@ export type GetMoviesQuery = {
   title?: string;
   sort?: "id" | "title" | "year";
   order?: "ASC" | "DESC";
-  limit?: string;
-  offset?: string;
+  limit?: number;
+  offset?: number;
 };

@@ -42,8 +42,8 @@ export const getPagination = (query: GetMoviesQuery): FindOptions => {
   const { limit, offset } = query;
   return limit
     ? {
-        limit: Number(limit),
-        offset: Number(offset || 0)
+        limit: limit,
+        offset: offset || 0
       }
     : {
         subQuery: false
