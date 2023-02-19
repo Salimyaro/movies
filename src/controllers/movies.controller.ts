@@ -2,21 +2,13 @@ import { ControllerFunction } from "../interfaces/index.js";
 import * as movieService from "../services/movie.service.js";
 import formidable from "formidable";
 import fs from "fs";
+import ApiError from "../helpers/customErrors.js";
 
-export const createMovie: ControllerFunction = async (req, res) => {
+export const createMovie: ControllerFunction = async (req, res, next) => {
   try {
     const exist = await movieService.findMovieByTitle(req.body.title);
-    if (exist) {
-      return res.status(400).json({
-        status: 0,
-        error: {
-          fields: {
-            title: req.body.title
-          },
-          code: "MOVIE_EXISTS"
-        }
-      });
-    }
+    if (exist)
+      throw ApiError.BadRequest(`Movie '${req.body.title}' already exists`);
 
     const result = await movieService.createMovie(req.body);
 
@@ -25,12 +17,7 @@ export const createMovie: ControllerFunction = async (req, res) => {
       data: result
     });
   } catch (error) {
-    console.log(error);
-    return res.status(500).json({
-      status: 0,
-      message: "Something wrong, please repeat request",
-      error
-    });
+    next(error);
   }
 };
 
@@ -40,8 +27,7 @@ export const importMovies: ControllerFunction = async (req, res, next) => {
 
     fs.readFile(filepath, "utf8", async (err, data) => {
       if (err) {
-        next(err);
-        return;
+        return next(err);
       }
       const pending = [];
       let imports = 0;
@@ -80,48 +66,28 @@ export const importMovies: ControllerFunction = async (req, res, next) => {
       });
     });
   } catch (error) {
-    console.log(error);
-    console.log("!!!!!!!!!!!! exit");
-    return res.status(500).json({
-      status: 0,
-      message: "Something wrong, please repeat request",
-      error
-    });
+    next(error);
   }
 };
 
-export const getMovie: ControllerFunction = async (req, res) => {
+export const getMovie: ControllerFunction = async (req, res, next) => {
   try {
     const { movieId } = req.params;
 
     const result = await movieService.findMovieById(movieId);
-    if (!result) {
-      return res.status(400).json({
-        status: 0,
-        error: {
-          fields: {
-            id: movieId
-          },
-          code: "MOVIE_NOT_FOUND"
-        }
-      });
-    }
+    if (!result)
+      throw ApiError.NotFoundError(`Movie with id: ${movieId} not found`);
 
     return res.status(200).json({
       status: 1,
       data: result
     });
   } catch (error) {
-    console.log(error);
-    return res.status(500).json({
-      status: 0,
-      message: "Something wrong, please repeat request",
-      error
-    });
+    next(error);
   }
 };
 
-export const getList: ControllerFunction = async (req, res) => {
+export const getList: ControllerFunction = async (req, res, next) => {
   try {
     const result = await movieService.findMovies(req.query);
 
@@ -130,31 +96,17 @@ export const getList: ControllerFunction = async (req, res) => {
       data: result
     });
   } catch (error) {
-    console.log(error);
-    return res.status(500).json({
-      status: 0,
-      message: "Something wrong, please repeat request",
-      error
-    });
+    next(error);
   }
 };
 
-export const updateMovie: ControllerFunction = async (req, res) => {
+export const updateMovie: ControllerFunction = async (req, res, next) => {
   try {
     const { movieId } = req.params;
 
     const deleted = await movieService.deleteMovieById(movieId);
-    if (!deleted) {
-      return res.status(400).json({
-        status: 0,
-        error: {
-          fields: {
-            id: movieId
-          },
-          code: "MOVIE_NOT_FOUND"
-        }
-      });
-    }
+    if (!deleted)
+      throw ApiError.NotFoundError(`Movie with id: ${movieId} not found`);
 
     const result = await movieService.createMovie({ ...req.body, id: movieId });
 
@@ -163,41 +115,22 @@ export const updateMovie: ControllerFunction = async (req, res) => {
       data: result
     });
   } catch (error) {
-    console.log(error);
-    return res.status(500).json({
-      status: 0,
-      message: "Something wrong, please repeat request",
-      error
-    });
+    next(error);
   }
 };
 
-export const deleteMovie: ControllerFunction = async (req, res) => {
+export const deleteMovie: ControllerFunction = async (req, res, next) => {
   try {
     const { movieId } = req.params;
 
     const deleted = await movieService.deleteMovieById(movieId);
-    if (!deleted) {
-      return res.status(400).json({
-        status: 0,
-        error: {
-          fields: {
-            id: movieId
-          },
-          code: "MOVIE_NOT_FOUND"
-        }
-      });
-    }
+    if (!deleted)
+      throw ApiError.NotFoundError(`Movie with id: ${movieId} not found`);
 
     return res.status(204).json({
       status: 1
     });
   } catch (error) {
-    console.log(error);
-    return res.status(500).json({
-      status: 0,
-      message: "Something wrong, please repeat request",
-      error
-    });
+    next(error);
   }
 };

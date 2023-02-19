@@ -24,12 +24,6 @@ export const getMovieFile: ExpressFunction = async (req, res, next) => {
       next();
     });
   } catch (error) {
-    console.dir(error);
-    return res.status(400).json({
-      status: 0,
-      error: {
-        code: "FORM_DATA_ERROR"
-      }
-    });
+    next(error);
   }
 };

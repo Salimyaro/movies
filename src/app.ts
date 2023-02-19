@@ -4,6 +4,7 @@ import usersRouter from "./routes/users.route.js";
 import sessionsRouter from "./routes/sessions.route.js";
 import moviesRouter from "./routes/movies.route.js";
 import { sequelize } from "./db/index.js";
+import { errorMiddleware } from "./middleware/errors.js";
 
 config();
 
@@ -14,6 +15,8 @@ app.use(express.urlencoded({ limit: "5mb", extended: true }));
 app.use("/api/v1/users", usersRouter);
 app.use("/api/v1/sessions", sessionsRouter);
 app.use("/api/v1/movies", moviesRouter);
+
+app.use(errorMiddleware);
 
 const PORT: number = process.env.APP_PORT ? Number(process.env.APP_PORT) : 5000;
 const HOST = "0.0.0.0";

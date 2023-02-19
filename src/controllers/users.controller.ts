@@ -3,23 +3,17 @@ import { ControllerFunction } from "../interfaces/index.js";
 import { CreateUserBody } from "../interfaces/users.js";
 import jwt from "jsonwebtoken";
 import { getHashPassword } from "../helpers/password.js";
+import ApiError from "../helpers/customErrors.js";
 
-export const create: ControllerFunction = async (req, res) => {
+export const create: ControllerFunction = async (req, res, next) => {
   try {
     const { email, name, password, confirmPassword }: CreateUserBody = req.body;
 
-    if (password !== confirmPassword) {
-      return res.status(400).json({
-        status: 0,
-        error: {
-          fields: {
-            confirmPassword: "NOT_SAME",
-            password: "NOT_SAME"
-          },
-          code: "NOT_SAME"
-        }
-      });
-    }
+    if (password !== confirmPassword)
+      throw ApiError.BadRequest(
+        "password and confirmPassword must be the same"
+      );
+
     const result = await User.create({
       email,
       name,
@@ -37,11 +31,6 @@ export const create: ControllerFunction = async (req, res) => {
       status: 1
     });
   } catch (error) {
-    console.log(error);
-    return res.status(500).json({
-      status: 0,
-      message: "Something wrong, please repeat request",
-      error
-    });
+    next(error);
   }
 };

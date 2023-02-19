@@ -3,8 +3,9 @@ import { ControllerFunction } from "../interfaces/index.js";
 import { CreateSessionBody } from "../interfaces/sessions.js";
 import jwt from "jsonwebtoken";
 import { verifyPassword } from "../helpers/password.js";
+import ApiError from "../helpers/customErrors.js";
 
-export const create: ControllerFunction = async (req, res) => {
+export const create: ControllerFunction = async (req, res, next) => {
   try {
     const { email, password }: CreateSessionBody = req.body;
     const result = await User.findOne({ where: { email } });
@@ -15,18 +16,8 @@ export const create: ControllerFunction = async (req, res) => {
         candidatePassword: password,
         hash: result.dataValues.password
       })
-    ) {
-      return res.status(400).json({
-        status: 0,
-        error: {
-          fields: {
-            email: "AUTHENTICATION_FAILED",
-            password: "AUTHENTICATION_FAILED"
-          },
-          code: "AUTHENTICATION_FAILED"
-        }
-      });
-    }
+    )
+      throw ApiError.UnauthorizedError("Not valid email or password");
 
     const token = jwt.sign(
       { id: result.dataValues.id, email: result.dataValues.email },
@@ -39,11 +30,6 @@ export const create: ControllerFunction = async (req, res) => {
       status: 1
     });
   } catch (error) {
-    console.log(error);
-    return res.status(500).json({
-      status: 0,
-      message: "Something wrong, please repeat request",
-      error
-    });
+    next(error);
   }
 };

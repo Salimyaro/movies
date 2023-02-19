@@ -1,5 +1,6 @@
 import jwt from "jsonwebtoken";
 import { User } from "../db/User.js";
+import ApiError from "../helpers/customErrors.js";
 import { ExpressFunction } from "../interfaces/index.js";
 
 export const checkAuth: ExpressFunction = async (req, res, next) => {
@@ -10,17 +11,7 @@ export const checkAuth: ExpressFunction = async (req, res, next) => {
     const result = await User.findOne({
       where: { email: decoded.email, id: decoded.id }
     });
-    if (!result) {
-      return res.status(401).json({
-        status: 0,
-        error: {
-          fields: {
-            token: "JWT_NOT_VALID"
-          },
-          code: "JWT_ERROR"
-        }
-      });
-    }
+    if (!result) throw ApiError.UnauthorizedError("JWT_NOT_VALID");
     next();
   } catch (error) {
     console.dir(error);
