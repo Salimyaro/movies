@@ -1,0 +1,575 @@
+paths:
+  /movies:
+    get:
+      summary: Get list of movies
+      security:
+        - BearerAuth: []
+      tags: ["Movies"]
+      headers:
+        Authorization:
+          $ref: "#/components/headers/Authorization"
+      parameters:
+        - name: sort
+          in: query
+          description: Sort by
+          required: false
+          schema:
+            type: string
+            enum: [title, id, year]
+        - name: order
+          in: query
+          description: Sort order
+          required: false
+          schema:
+            type: string
+            enum: [ASC, DESC]
+        - name: offset
+          in: query
+          description: Skip the results
+          required: false
+          schema:
+            type: number
+        - name: limit
+          in: query
+          description: Limits how many items will be retrieved by the operation
+          required: false
+          schema:
+            type: number
+        - name: title
+          in: query
+          description: Get movies list by movie title
+          required: false
+          schema:
+            type: string
+        - name: actor
+          in: query
+          description: Get movies list by movie actor
+          required: false
+          schema:
+            type: string
+      responses:
+        "200":
+          description: List by provided parameters
+          content:
+            application/json:
+              schema:
+                properties:
+                  status:
+                    type: number
+                  data:
+                    type: object
+                example:
+                  status: 1
+                  data:
+                    {
+                      count: 1,
+                      rows:
+                        [
+                          {
+                            id: 1,
+                            title: "Casablanca",
+                            year: 1940,
+                            format: "DVD",
+                            createdAt: "2023-02-19T18:39:06.048Z",
+                            updatedAt: "2023-02-19T18:39:06.048Z",
+                            actors:
+                              [
+                                {
+                                  id: 1,
+                                  name: "Peter Lorre",
+                                  createdAt: "2023-02-19T18:39:06.059Z",
+                                  updatedAt: "2023-02-19T18:39:06.059Z"
+                                }
+                              ]
+                          }
+                        ]
+                    }
+        "400":
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: number
+                  message:
+                    type: string
+                example:
+                  status: 0
+                  message: Validation message
+        "401":
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: number
+                  message:
+                    type: string
+                example:
+                  status: 0
+                  message: JWT error message
+        "500":
+          content:
+            application/json:
+              schema:
+                properties:
+                  status:
+                    type: number
+                  message:
+                    type: string
+                example:
+                  status: 0
+                  message: Unhandled error.
+    post:
+      summary: Add new movie
+      security:
+        - BearerAuth: []
+      tags: ["Movies"]
+      headers:
+        Authorization:
+          $ref: "#/components/headers/Authorization"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateMovie"
+      responses:
+        "200":
+          description: Movie successfully created
+          content:
+            application/json:
+              schema:
+                properties:
+                  status:
+                    type: number
+                  data:
+                    type: object
+                example:
+                  status: 1
+                  data:
+                    {
+                      id: 1,
+                      title: "Casablanca",
+                      year: 1940,
+                      format: "DVD",
+                      createdAt: "2023-02-19T18:39:06.048Z",
+                      updatedAt: "2023-02-19T18:39:06.048Z",
+                      actors:
+                        [
+                          {
+                            id: 1,
+                            name: "Peter Lorre",
+                            createdAt: "2023-02-19T18:39:06.059Z",
+                            updatedAt: "2023-02-19T18:39:06.059Z"
+                          }
+                        ]
+                    }
+        "400":
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: number
+                  message:
+                    type: string
+                example:
+                  status: 0
+                  message: Validation message
+        "401":
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: number
+                  message:
+                    type: string
+                example:
+                  status: 0
+                  message: JWT error message
+        "500":
+          content:
+            application/json:
+              schema:
+                properties:
+                  status:
+                    type: number
+                  message:
+                    type: string
+                example:
+                  status: 0
+                  message: Unhandled error.
+  /movies/{id}:
+    get:
+      summary: Movie by id
+      security:
+        - BearerAuth: []
+      tags: ["Movies"]
+      headers:
+        Authorization:
+          $ref: "#/components/headers/Authorization"
+      parameters:
+        - name: id
+          in: path
+          description: Movie Id
+          required: true
+          schema:
+            type: number
+      responses:
+        "200":
+          description: Movie found
+          content:
+            application/json:
+              schema:
+                properties:
+                  status:
+                    type: number
+                  data:
+                    type: object
+                example:
+                  status: 1
+                  data:
+                    {
+                      id: 1,
+                      title: "Casablanca",
+                      year: 1940,
+                      format: "DVD",
+                      createdAt: "2023-02-19T18:39:06.048Z",
+                      updatedAt: "2023-02-19T18:39:06.048Z",
+                      actors:
+                        [
+                          {
+                            id: 1,
+                            name: "Peter Lorre",
+                            createdAt: "2023-02-19T18:39:06.059Z",
+                            updatedAt: "2023-02-19T18:39:06.059Z"
+                          }
+                        ]
+                    }
+        "400":
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: number
+                  message:
+                    type: string
+                example:
+                  status: 0
+                  message: Validation message
+        "401":
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: number
+                  message:
+                    type: string
+                example:
+                  status: 0
+                  message: JWT error message
+        "404":
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: number
+                  message:
+                    type: string
+                example:
+                  status: 0
+                  message: "Movie with id:{id} not found"
+        "500":
+          content:
+            application/json:
+              schema:
+                properties:
+                  status:
+                    type: number
+                  message:
+                    type: string
+                example:
+                  status: 0
+                  message: Unhandled error.
+    put:
+      summary: Replace movie by id
+      security:
+        - BearerAuth: []
+      tags: ["Movies"]
+      headers:
+        Authorization:
+          $ref: "#/components/headers/Authorization"
+      parameters:
+        - name: id
+          in: path
+          description: Movie Id
+          required: true
+          schema:
+            type: number
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateMovie"
+      responses:
+        "200":
+          description: Movie successfully replaced
+          content:
+            application/json:
+              schema:
+                properties:
+                  status:
+                    type: number
+                  data:
+                    type: object
+                example:
+                  status: 1
+                  data:
+                    {
+                      id: 1,
+                      title: "Casablanca",
+                      year: 1940,
+                      format: "DVD",
+                      createdAt: "2023-02-19T18:39:06.048Z",
+                      updatedAt: "2023-02-19T18:39:06.048Z",
+                      actors:
+                        [
+                          {
+                            id: 1,
+                            name: "Peter Lorre",
+                            createdAt: "2023-02-19T18:39:06.059Z",
+                            updatedAt: "2023-02-19T18:39:06.059Z"
+                          }
+                        ]
+                    }
+        "400":
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: number
+                  message:
+                    type: string
+                example:
+                  status: 0
+                  message: Validation message
+        "401":
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: number
+                  message:
+                    type: string
+                example:
+                  status: 0
+                  message: JWT error message
+        "404":
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: number
+                  message:
+                    type: string
+                example:
+                  status: 0
+                  message: "Movie with id:{id} not found"
+        "500":
+          content:
+            application/json:
+              schema:
+                properties:
+                  status:
+                    type: number
+                  message:
+                    type: string
+                example:
+                  status: 0
+                  message: Unhandled error.
+    delete:
+      summary: Delete movie by id
+      security:
+        - BearerAuth: []
+      tags: ["Movies"]
+      headers:
+        Authorization:
+          $ref: "#/components/headers/Authorization"
+      parameters:
+        - name: id
+          in: path
+          description: Movie Id
+          required: true
+          schema:
+            type: number
+      responses:
+        "204":
+          description: Movie successfully deleted
+        "400":
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: number
+                  message:
+                    type: string
+                example:
+                  status: 0
+                  message: Validation message
+        "401":
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: number
+                  message:
+                    type: string
+                example:
+                  status: 0
+                  message: JWT error message
+        "404":
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: number
+                  message:
+                    type: string
+                example:
+                  status: 0
+                  message: "Movie with id:{id} not found"
+        "500":
+          content:
+            application/json:
+              schema:
+                properties:
+                  status:
+                    type: number
+                  message:
+                    type: string
+                example:
+                  status: 0
+                  message: Unhandled error.
+  /movies/import:
+    post:
+      summary: Import list of movies
+      security:
+        - BearerAuth: []
+      tags: ["Movies"]
+      headers:
+        Authorization:
+          $ref: "#/components/headers/Authorization"
+      consumes:
+        - multipart/form-data
+      parameters:
+        - name: movies
+          in: formData
+          type: file
+          description: Import Movies from txt file
+          required: true
+      responses:
+        "200":
+          description: Movies was imported
+          content:
+            application/json:
+              schema:
+                properties:
+                  status:
+                    type: number
+                  meta:
+                    imported:
+                      type: number
+                    created:
+                      type: number
+                  data:
+                    type: object
+                example:
+                  status: 1
+                  data:
+                    {
+                      count: 1,
+                      meta: { imported: 1, created: 1 },
+                      rows:
+                        [
+                          {
+                            id: 1,
+                            title: "Casablanca",
+                            year: 1940,
+                            format: "DVD",
+                            createdAt: "2023-02-19T18:39:06.048Z",
+                            updatedAt: "2023-02-19T18:39:06.048Z",
+                            actors:
+                              [
+                                {
+                                  id: 1,
+                                  name: "Peter Lorre",
+                                  createdAt: "2023-02-19T18:39:06.059Z",
+                                  updatedAt: "2023-02-19T18:39:06.059Z"
+                                }
+                              ]
+                          }
+                        ]
+                    }
+        "400":
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: number
+                  message:
+                    type: string
+                example:
+                  status: 0
+                  message: Validation message
+        "401":
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: number
+                  message:
+                    type: string
+                example:
+                  status: 0
+                  message: JWT error message
+        "500":
+          content:
+            application/json:
+              schema:
+                properties:
+                  status:
+                    type: number
+                  message:
+                    type: string
+                example:
+                  status: 0
+                  message: Unhandled error.

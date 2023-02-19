@@ -25,7 +25,7 @@ userRouter.get(
 userRouter.post(
   "/",
   checkAuth,
-  validate(movieValidSchema.createMovie),
+  validate(movieValidSchema.createReqMovie),
   moviesController.createMovie
 );
 userRouter.post(

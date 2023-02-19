@@ -1,0 +1,14 @@
+components:
+  headers:
+    Authorization:
+      schema:
+        type: string
+        example: "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiZW1haWwiOiJwZXRyb0BnbWFpbC5jb20iLCJpYXQiOjE2NzY4MzE5NDMsImV4cCI6MTY3NjkxODM0M30.-44p7RihscTaJyJXrGPdotZsit0nFs9l-d82pnUzOXc"
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+security:
+  - BearerAuth: []

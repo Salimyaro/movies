@@ -1,0 +1,64 @@
+paths:
+  /sessions:
+    post:
+      summary: Login by email and password
+      security: []
+      tags: ["Sessions"]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Login"
+      responses:
+        "200":
+          description: Login successful
+          content:
+            application/json:
+              schema:
+                properties:
+                  status:
+                    type: number
+                  token:
+                    type: string
+                example:
+                  status: 1
+                  token: yJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiZW1haWwiOiJ1c2VyQGV4YW1wbGUuY29tIiwiaWF0IjoxNjc2ODI5NTUyLCJleHAiOjE2NzY5MTU5NTJ9.kltlEdoS_hKZQ5sNQv41Ri_xA3lhXaA7DAEAF-M9xqg
+        "400":
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: number
+                  message:
+                    type: string
+                example:
+                  status: 0
+                  message: Validation message
+        "401":
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: number
+                  message:
+                    type: string
+                example:
+                  status: 0
+                  message: Not valid email or password
+        "500":
+          content:
+            application/json:
+              schema:
+                properties:
+                  status:
+                    type: number
+                  message:
+                    type: string
+                example:
+                  status: 0
+                  message: Unhandled error.

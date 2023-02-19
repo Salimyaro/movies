@@ -8,7 +8,7 @@ const userRouter: Router = Router();
 /* POST requests */
 userRouter.post(
   "/",
-  validate(sessionValidSchema.loginSchema),
+  validate(sessionValidSchema.loginReqSchema),
   sessionsController.create
 );
 

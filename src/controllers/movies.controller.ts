@@ -1,7 +1,6 @@
+import fs from "fs";
 import { ControllerFunction } from "../interfaces/index.js";
 import * as movieService from "../services/movie.service.js";
-import formidable from "formidable";
-import fs from "fs";
 import ApiError from "../helpers/customErrors.js";
 
 export const createMovie: ControllerFunction = async (req, res, next) => {

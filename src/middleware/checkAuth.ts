@@ -14,26 +14,16 @@ export const checkAuth: ExpressFunction = async (req, res, next) => {
     if (!result) throw ApiError.UnauthorizedError("JWT_NOT_VALID");
     next();
   } catch (error) {
-    console.dir(error);
+    console.error(error);
     if (error instanceof jwt.TokenExpiredError)
       return res.status(401).json({
         status: 0,
-        error: {
-          fields: {
-            token: "JWT_NOT_VALID"
-          },
-          code: "JWT_ERROR"
-        }
+        message: "JWT_NOT_VALID"
       });
 
     return res.status(401).json({
       status: 0,
-      error: {
-        fields: {
-          token: "REQUIRED"
-        },
-        code: "JWT_ERROR"
-      }
+      message: "JWT_REQUIRED"
     });
   }
 };

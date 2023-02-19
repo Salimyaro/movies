@@ -1,10 +1,11 @@
 import { Joi } from "express-validation";
 import * as validSchema from "./index.validationSchema.js";
 
+export const movieId = {
+  movieId: validSchema.numberGreaterZeroSchema
+};
 export const getMovie = {
-  params: Joi.object({
-    movieId: validSchema.numberGreaterZeroSchema
-  })
+  params: Joi.object(movieId)
 };
 
 export const getList = {
@@ -19,18 +20,18 @@ export const getList = {
 };
 
 export const createMovie = {
-  body: Joi.object({
-    title: validSchema.stringMinTwoSymbolSchema,
-    year: validSchema.numberSchema,
-    format: validSchema.formatValidationSchema,
-    actors: Joi.array().items(validSchema.stringMinTwoSymbolSchema)
-  })
+  title: validSchema.stringMinTwoSymbolSchema,
+  year: validSchema.numberSchema,
+  format: validSchema.formatValidationSchema,
+  actors: Joi.array().items(validSchema.stringMinTwoSymbolSchema)
+};
+
+export const createReqMovie = {
+  body: Joi.object(createMovie)
 };
 
 export const updateMovie = {
-  params: Joi.object({
-    movieId: validSchema.numberGreaterZeroSchema
-  }),
+  params: Joi.object(movieId),
   body: Joi.object({
     title: validSchema.stringMinTwoSymbolSchema,
     year: validSchema.numberSchema,
@@ -40,9 +41,7 @@ export const updateMovie = {
 };
 
 export const deleteMovie = {
-  params: Joi.object({
-    movieId: validSchema.numberGreaterZeroSchema
-  })
+  params: Joi.object(movieId)
 };
 
 export const importMovies = {
