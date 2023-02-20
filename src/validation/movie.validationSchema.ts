@@ -21,7 +21,7 @@ export const getList = {
 
 export const createMovie = {
   title: validSchema.stringMinTwoSymbolSchema,
-  year: validSchema.numberSchema,
+  year: Joi.number().min(1850).max(2023).required(),
   format: validSchema.formatValidationSchema,
   actors: Joi.array().items(validSchema.stringMinTwoSymbolSchema)
 };
@@ -34,7 +34,7 @@ export const updateMovie = {
   params: Joi.object(movieId),
   body: Joi.object({
     title: validSchema.stringMinTwoSymbolSchema,
-    year: validSchema.numberSchema,
+    year: Joi.number().min(1850).max(2023).required(),
     format: validSchema.formatValidationSchema,
     actors: Joi.array().items(validSchema.stringMinTwoSymbolSchema)
   })

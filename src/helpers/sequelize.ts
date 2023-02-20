@@ -1,4 +1,5 @@
 import { FindOptions, Op } from "sequelize";
+import { sequelize } from "../db/index.js";
 import { Actor } from "../db/Movie.js";
 import { GetMoviesQuery } from "../interfaces/movies.js";
 
@@ -34,7 +35,7 @@ export const getWhere = (query: GetMoviesQuery): FindOptions => {
 export const getOrder = (query: GetMoviesQuery): FindOptions => {
   const { sort = "title", order = "ASC" } = query;
   return {
-    order: [[sort, order]]
+    order: [[sequelize.fn("lower", sequelize.col(sort)), order]]
   };
 };
 

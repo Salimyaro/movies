@@ -31,7 +31,7 @@ export const importMovies: ControllerFunction = async (req, res, next) => {
       const pending = [];
       let imports = 0;
 
-      const filmsArray = data.split(/\n\s*\n/);
+      const filmsArray: string[] = data.split(/\n\s*\n/);
 
       for (const film of filmsArray) {
         const filmLines = film.split("\n");
@@ -126,8 +126,9 @@ export const deleteMovie: ControllerFunction = async (req, res, next) => {
     if (!deleted)
       throw ApiError.NotFoundError(`Movie with id: ${movieId} not found`);
 
-    return res.status(204).json({
-      status: 1
+    return res.status(200).json({
+      status: 1,
+      message: `Movie with id: ${movieId} was deleted`
     });
   } catch (error) {
     next(error);

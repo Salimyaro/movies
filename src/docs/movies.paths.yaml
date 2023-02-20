@@ -484,14 +484,15 @@ paths:
       headers:
         Authorization:
           $ref: "#/components/headers/Authorization"
-      consumes:
-        - multipart/form-data
-      parameters:
-        - name: movies
-          in: formData
-          type: file
-          description: Import Movies from txt file
-          required: true
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                movies:
+                  type: string
+                  format: binary
       responses:
         "200":
           description: Movies was imported
